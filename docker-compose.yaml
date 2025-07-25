@@ -1,5 +1,3 @@
-version : '3.8'
-
 services:
   chromium:
     image: lscr.io/linuxserver/chromium:latest
@@ -7,26 +5,28 @@ services:
     security_opt:
       - seccomp:unconfined
     environment:
-      - CUSTOM_USER=       # Isi/ubah username favorit
-      - PASSWORD=          # Isi/ubah password favorit  
+      - CUSTOM_USER=xxxxxxxxxx
+      - PASSWORD=xxxxxxxxxxxxx
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/Berlin # ubah lokal jam sesuai server/vps
-      - CHROME_CLI=https://github.com/arcxteam  # opsi
+      - TZ=Europe/Berlin
+      - PROXY_SERVER=http-https-socks5
     volumes:
-      - /root/chromium/config:/config
+      - /root/chrome/config:/config
     ports:
-      - 3010:3000   # Ubah 3010 port favorit (opsi jika bentrok)
-      - 3011:3001   # Ubah 3011 port favorit (opsi jika bentrok)
+      - 3030:3000  # VNC
+      - 3031:3001  # WebRTC
     shm_size: "1gb"
-    mem_limit: "2g"    # Membatasi penggunaan RAM maksimum menjadi 2GB
-    cpus: "1"          # Membatasi penggunaan CPU maksimal 100% dari satu core
     restart: unless-stopped
-
-    # Konfigurasi pemeriksaan pantau kesehatan kontainer
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]  # cek inferensi aja
-      interval: 10m         # Ubah sesuai kemauan 1-60 menit
-      timeout: 10s          
-      retries: 3            
-      start_period: 30s     
+    command: >
+      /bin/sh -c "
+      /usr/bin/chromium-browser \
+        --no-sandbox \
+        --disable-dev-shm-usage \
+        --proxy-server=\"$$PROXY_SERVER\" \
+        --enable-remote-extensions \
+        --ignore-certificate-errors \
+        --no-first-run \
+        --no-default-browser-check \
+        --user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/114.0.5735.198\" \
+        --kiosk"
