@@ -41,7 +41,7 @@ echo ""
 cat > docker-compose.yml << EOF
 services:
   chrome:
-    image: kasmweb/chrome:1.15.0
+    image: kasmweb/chrome:1.17.0
     container_name: kasm-chrome
     environment:
       - VNC_PW=$vnc_password
@@ -51,6 +51,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./downloads:/home/kasm-user/Downloads
+      - ./chrome-profile:/home/kasm-user/.config/google-chrome
 EOF
 
 # Start service
@@ -59,7 +60,7 @@ sudo docker compose up -d
 
 # Wait for startup
 info "Waiting for service to start..."
-sleep 10
+sleep 5
 
 if sudo docker ps | grep -q kasm-chrome; then
   success "Chrome browser is running!"
@@ -72,11 +73,9 @@ if sudo docker ps | grep -q kasm-chrome; then
   echo "   Password: $vnc_password"
   echo ""
   echo "✨ Features:"
-  echo "   - Full Google Chrome"
+  echo "   - Full Control Google Chrome"
   echo "   - High performance"
-  echo "   - File transfer"
-  echo "   - Audio support"
-  echo "   - Copy/paste"
+  echo "   - KasmVNC modern"
 else
   error "Failed to start Chrome"
   echo "Check logs: docker compose logs -f"
