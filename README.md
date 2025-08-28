@@ -1,9 +1,9 @@
-# Setup Full-Control a Browser Google Chrome on Linux (VPS Server) via KasmVNC Workspaces
+# Setup Full-Control a Browser Google Chrome on Linux (VPS Server) with KasmVNC Workspaces
 
 > [!NOTE]
 > KasmVNC is a modern open source VNC server. Enhanced security, higher compression, smoother encoding...
 > all in a web-based client. Connect to your Linux server's desktop from any web browser. No client software install required.
-> For more https://kasmweb.com/kasmvnc
+> For more information features https://kasmweb.com/kasmvnc
 
 ## System Requirements
 
@@ -12,11 +12,11 @@
 ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 ![Chrome](https://img.shields.io/badge/Chrome-34A853?style=for-the-badge&logo=google-chrome&logoColor=yellow)
 
-- **OS**: Ubuntu 20.04+ or Debian 10+
-- **RAM**: Minimum 1 → 2GB (good 4GB+)
-- **CPU**: 2 → 4+ cores
-- **Storage**: 5GB free space
-- **Network**: Open port 6901 (access web)
+- **OS**: Ubuntu 20→24 LTS or Debian 10+
+- **RAM**: Minimum 1→2GB (good 4GB+)
+- **CPU**: 2→4+ cores
+- **Storage**: 2→5GB free space
+- **Network**: Open port 6901 (access web browser)
 
 ## System Update & Essential Tools
 
@@ -43,14 +43,14 @@ sudo ufw status verbose
 
 ## Quick Install
 
-### Method 1:
+### Method 1: EDIT first YOUR_PASSWORD
 ```bash
-KASM_PASSWORD="your_password" curl -s https://raw.githubusercontent.com/arcxteam/Chrome-Linux/refs/heads/main/Setup-Kasmweb-Chrome.sh | bash
+curl -s https://raw.githubusercontent.com/arcxteam/Chrome-Linux/refs/heads/main/Setup-Kasmweb-Chrome.sh | bash -s "YOUR_PASSWORD"
 ```
 
-### Method 2:
+### Method 2: EDIT first YOUR_PASSWORD
 ```bash
-export KASM_PASSWORD="your_password"
+export KASM_PASSWORD="YOUR_PASSWORD"
 curl -s https://raw.githubusercontent.com/arcxteam/Chrome-Linux/refs/heads/main/Setup-Kasmweb-Chrome.sh | bash
 ```
 
@@ -77,7 +77,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./downloads:/home/kasm-user/Downloads
-      - ./chrome-profile:/home/kasm-user/.config/google-chrome
 EOF
 
 # Start service
@@ -87,6 +86,7 @@ docker compose up -d
 ## Access Your Browser
 
 After installation completes, you'll see output like:
+
 ```
 
 ✔ Chrome browser is running!
@@ -118,11 +118,15 @@ curl ifconfig.me && echo
 ```diff
 ## Check Status
 - docker ps | grep kasm-chrome
+
 ## View Logs
 - docker logs -f kasm-chrome
-## Stop Browser
+
+## Stop and Run Browser
 - cd ~/kasm-chrome
 - docker compose down
+- docker compose up -d
+
 ## View realtime resources
 - docker stats
 ```
