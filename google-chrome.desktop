@@ -1,0 +1,16 @@
+cat > ~/Desktop/google-chrome.desktop << 'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Google Chrome
+Comment=Access the Internet
+Exec=google-chrome --no-sandbox --disable-dev-shm-usage --disable-gpu --test-type
+Icon=google-chrome
+Categories=Network;WebBrowser;
+Terminal=false
+EOF
+
+chmod +x ~/Desktop/google-chrome.desktop
+
+# Refresh menu
+sudo update-desktop-database
