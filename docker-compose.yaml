@@ -1,32 +1,37 @@
 services:
-  chromium:
-    image: lscr.io/linuxserver/chromium:latest
-    container_name: chromium
-    security_opt:
-      - seccomp:unconfined
-    environment:
-      - CUSTOM_USER=xxxxxxxxxx
-      - PASSWORD=xxxxxxxxxxxxx
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Berlin
-      - PROXY_SERVER=http-https-socks5
-    volumes:
-      - /root/chrome/config:/config
-    ports:
-      - 3030:3000  # VNC
-      - 3031:3001  # WebRTC
-    shm_size: "1gb"
+  xfce-desktop:
+    image: accetto/ubuntu-vnc-xfce:latest
+    container_name: xfce-desktop
     restart: unless-stopped
+    ports:
+      - "8080:5901" # VNC access (for VNC clients)
+      - "8081:6901" # Web access (via browser)
+    environment:
+      - VNC_RESOLUTION=1280x720
+      - VNC_PW=admin
+      - ENABLE_VNC_AUDIO=true
+      - ENABLE_VNC_COPY=true
+      - ENABLE_VNC_PASTE=true
+    volumes:
+      - xfce-data:/home/headless
+      - ./downloads:/home/headless/Downloads
+      - ./chrome.desktop:/home/headless/Desktop/google-chrome.desktop
+      - ./chrome.desktop:/usr/share/applications/google-chrome.desktop
+      - ./install-chrome.sh:/tmp/install-chrome.sh  # Auto-install script
+    shm_size: 2gb
+    networks:
+      - desktop-network
     command: >
-      /bin/sh -c "
-      /usr/bin/chromium-browser \
-        --no-sandbox \
-        --disable-dev-shm-usage \
-        --proxy-server=\"$$PROXY_SERVER\" \
-        --enable-remote-extensions \
-        --ignore-certificate-errors \
-        --no-first-run \
-        --no-default-browser-check \
-        --user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/114.0.5735.198\" \
-        --kiosk"
+      sh -c "
+      chmod +x /tmp/install-chrome.sh &&
+      /tmp/install-chrome.sh &&
+      /dockerstartup/vnc_startup.sh
+      "
+
+volumes:
+  xfce-data:
+    driver: local
+
+networks:
+  desktop-network:
+    driver: bridge
