@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Google Chrome
+Comment=Access the Internet
+Exec=sh -c "google-chrome --no-sandbox --disable-dev-shm-usage --disable-gpu --test-type --user-data-dir=/tmp/chrome-profile"
+Icon=google-chrome
+Categories=Network;WebBrowser;
+Terminal=false
+StartupWMClass=Google-chrome
