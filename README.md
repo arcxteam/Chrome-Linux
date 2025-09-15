@@ -1,4 +1,9 @@
-# Setup Full-Control a Browser Google Chrome on Linux (VPS Server) with KasmVNC Workspaces
+# Setup Full-Control a Browser Google Chrome on Linux (VPS Server)
+
+## 1. For KasmVNC Workspaces - Full-only use Google Chrome
+## 2. For Linux Desktop - Fully control environments GUI
+
+<img width="1485" height="745" alt="image" src="https://github.com/user-attachments/assets/554b17d2-23d7-4b51-9e93-6d540f2fc502" />
 
 > [!NOTE]
 > KasmVNC is a modern open source VNC server. Enhanced security, higher compression, smoother encoding...
@@ -25,7 +30,7 @@ sudo apt update && sudo apt upgrade -y \
 sudo apt -qy install curl git nano jq lz4 build-essential screen ufw
 ```
 
-## Install Docker & Docker Compose → "<mark>if not yet</mark>"
+## Install Docker & Docker Compose → <mark>if not yet</mark>
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/arcxteam/succinct-prover/refs/heads/main/docker.sh | sudo bash
@@ -56,7 +61,7 @@ curl -s https://raw.githubusercontent.com/arcxteam/Chrome-Linux/refs/heads/main/
 
 ## Manual Installation
 
-If you prefer to run manually:
+If you prefer to run manually, edit your password <mark>VNC_PW=YOUR_PASSWORD</mark>
 
 ```bash
 # Create directory
@@ -70,7 +75,7 @@ services:
     image: kasmweb/chrome:1.17.0
     container_name: kasm-chrome
     environment:
-      - VNC_PW=your_password
+      - VNC_PW=YOUR_PASSWORD
     ports:
       - "6901:6901"
     shm_size: 2g # can setup
@@ -87,18 +92,6 @@ docker compose up -d
 
 After installation completes, you'll see output like:
 
-```
-
-✔ Chrome browser is running!
-
-🌐 Access your browser at:
-   https://YOUR_SERVER_IP:6901
-
-🔐 Login credentials:
-   User: kasm_user
-   Password: your_password
-```
-
 ### Steps to Access:
 
 #### Get → IP Address Server
@@ -112,6 +105,118 @@ curl ifconfig.me && echo
    - Username: `kasm_user` → <mark>default</mark>
    - Password: `password` → <mark>your custom password</mark>
 4. **Bookmark your tab**
+
+---
+
+## Install Desktop Linux GUI
+
+#### Many methode use Linux desktop environments like modern-UI KDE Plasma, Kasm-Workspaces, Cinnamon, GNOME etc.. why I choose Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources.
+
+If you prefer to run manually, edit your password <mark>VNC_PW=YOUR_PASSWORD</mark>
+
+```bash
+# Create directory
+mkdir -p ~/desktop
+cd ~/desktop
+
+# Create docker-compose.yml
+cat > docker-compose.yml << EOF
+services:
+  xfce-desktop:
+    image: accetto/ubuntu-vnc-xfce:latest
+    container_name: xfce-desktop
+    restart: unless-stopped
+    ports:
+      - "8080:5901"  # VNC access
+      - "8081:6901"  # Web access
+    environment:
+      - VNC_RESOLUTION=1280x720 # For the best 1920x1080
+      - VNC_PW=YOUR_PASSWORD
+      - ENABLE_VNC_AUDIO=true
+      - ENABLE_VNC_COPY=true
+      - ENABLE_VNC_PASTE=true
+    volumes:
+      - xfce-data:/home/headless
+      - ./downloads:/home/headless/Downloads
+    shm_size: 2gb
+    networks:
+      - desktop-network
+
+volumes:
+  xfce-data:
+    driver: local
+
+networks:
+  desktop-network:
+    driver: bridge
+EOF
+
+# Start service
+docker compose up -d
+```
+
+### Open container docker
+```bash
+docker exec -it xfce-desktop bash
+```
+
+### In container, download full control chrome:
+```bash
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
+apt update
+apt install -y /tmp/chrome.deb
+apt install -y --fix-broken
+rm /tmp/chrome.deb
+```
+
+### Create google chrome icon and relaunch desktop entry
+```bash
+cat > ~/Desktop/google-chrome.desktop << 'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Google Chrome
+Comment=Access the Internet
+Exec=google-chrome --no-sandbox --disable-dev-shm-usage --disable-gpu --test-type
+Icon=google-chrome
+Categories=Network;WebBrowser;
+Terminal=false
+EOF
+```
+
+### Update & Permission
+```
+chmod +x ~/Desktop/google-chrome.desktop &&
+update-desktop-database
+```
+
+### Test Chrome version & exit container
+```bash
+google-chrome --version &&
+exit
+```
+
+### Get → IP Address Server
+```bash
+curl ifconfig.me && echo
+```
+
+### 1. Access by Web browser
+
+1. **Open URL**: Navigate to → <mark>http://YOUR_SERVER_IP:8081/vnc.html</mark>
+2. **You can see menu dashboard noVNC**
+3. **Connect**:
+   - Password: `password` → <mark>your custom password</mark>
+4. **Bookmark your tab**
+
+### 2. Access by VNC on mobile
+
+1. **Download App VNC viewer support like TigerVNC, Anydesk, TeamViewer or RealVNC**
+2. I use RealVNC (recommend) https://www.realvnc.com/en/connect/download/viewer/
+3. **Connect**:
+   - Address: `ip-address+port` → <mark>YOUR_SERVER_IP:8080</mark>
+   - Name: `Anymore you typing`
+4. **Browing on your mobile**
 
 ## Management Commands
 
