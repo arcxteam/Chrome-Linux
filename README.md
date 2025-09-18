@@ -1,14 +1,18 @@
-# Setup Full-Control a Browser Google Chrome on Linux (VPS Server)
+# Setup Installation Full-control Browser Google Chrome on Linux (Server/VPS)
 
-## 1. For KasmVNC Workspaces - Full-only use Google Chrome
-## 2. For Linux Desktop - Fully control environments GUI
+## By KasmVNC Workspaces only client browser
+## By Xfce Linux desktop environments (DE) GUI
 
 <img width="1485" height="745" alt="image" src="https://github.com/user-attachments/assets/554b17d2-23d7-4b51-9e93-6d540f2fc502" />
 
 > [!NOTE]
 > KasmVNC is a modern open source VNC server. Enhanced security, higher compression, smoother encoding...
 > all in a web-based client. Connect to your Linux server's desktop from any web browser. No client software install required.
-> For more information features https://kasmweb.com/kasmvnc
+> For more information https://kasmweb.com/kasmvnc
+> Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources
+> For more information https://www.xfce.org
+
+### For Comparison & List of Desktop Environments, https://eylenburg.github.io/de_comparison.htm
 
 ## System Requirements
 
@@ -17,11 +21,13 @@
 ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 ![Chrome](https://img.shields.io/badge/Chrome-34A853?style=for-the-badge&logo=google-chrome&logoColor=yellow)
 
-- **OS**: Ubuntu 20→24 LTS or Debian 10+
-- **RAM**: Minimum 1→2GB (good 4GB+)
-- **CPU**: 2→4+ cores
-- **Storage**: 2→5GB free space
-- **Network**: Open port 6901 (access web browser)
+- **OS**: Ubuntu 20 → 24 LTS or Debian 10+
+- **RAM/vRAM**: Minimum 1GB → 2GB (good 4GB+)
+- **CPU**: 2 → 4+ cores
+- **Storage**: Up to free space
+- **Network**: Open port 6901 (KasmVNC - access web browser)
+- **Network**: Open port 8081 (noVNC - access web browser)
+- **Network**: Open port 8080 (noVNC - access apps/mobile)
 
 ## System Update & Essential Tools
 
@@ -30,7 +36,7 @@ sudo apt update && sudo apt upgrade -y \
 sudo apt -qy install curl git nano jq lz4 build-essential screen ufw
 ```
 
-## Install Docker & Docker Compose → <mark>if not yet</mark>
+## Install Docker & Compose → <mark>if not yet</mark>
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/arcxteam/succinct-prover/refs/heads/main/docker.sh | sudo bash
@@ -41,7 +47,8 @@ curl -sSL https://raw.githubusercontent.com/arcxteam/succinct-prover/refs/heads/
 ```bash
 sudo ufw allow 22
 sudo ufw allow ssh
-sudo ufw allow 6901/tcp
+sudo ufw allow 6901/tcp # KasmVNC
+sudo ufw allow 8081/tcp # noVNC
 sudo ufw enable
 sudo ufw status verbose
 ```
