@@ -1,39 +1,48 @@
 # Setup Installation Full-control Browser Google Chrome on Linux (Server/VPS)
 
-## By KasmVNC Workspaces only client browser
-## By Xfce Linux desktop environments (DE) GUI
-
 <img width="1485" height="745" alt="image" src="https://github.com/user-attachments/assets/554b17d2-23d7-4b51-9e93-6d540f2fc502" />
 
 > [!NOTE]
-> KasmVNC is a modern open source VNC server. Enhanced security, higher compression, smoother encoding...
+> **KasmVNC** is a modern open source VNC server. Enhanced security, higher compression, smoother encoding...
 > all in a web-based client. Connect to your Linux server's desktop from any web browser. No client software install required.
-> For more information https://kasmweb.com/kasmvnc
-> Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources
-> For more information https://www.xfce.org
+> And for **XFCE** is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources.
+> For more information visit https://www.xfce.org & https://kasmweb.com/kasmvnc
 
-### For Comparison & List of Desktop Environments, https://eylenburg.github.io/de_comparison.htm
+> **For Comparison & List of Desktop Environments** https://eylenburg.github.io/de_comparison.htm
+
+> **(1) By KasmVNC Workspaces only client browser**
+
+> **(2) By Xfce Linux desktop environments (DE) GUI**
 
 ## System Requirements
 
 ![VPS](https://img.shields.io/badge/VPS_SERVER-232F3E?style=for-the-badge&logo=digitalocean&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
-![Chrome](https://img.shields.io/badge/Chrome-34A853?style=for-the-badge&logo=google-chrome&logoColor=yellow)
+![Chrome](https://img.shields.io/badge/Chrome-34A853?style=for-the-badge&logo=google-chrome&logoColor=white)
 
-- **OS**: Ubuntu 20 → 24 LTS or Debian 10+
-- **RAM/vRAM**: Minimum 1GB → 2GB (good 4GB+)
-- **CPU**: 2 → 4+ cores
-- **Storage**: Up to free space
-- **Network**: Open port 6901 (KasmVNC - access web browser)
-- **Network**: Open port 8081 (noVNC - access web browser)
-- **Network**: Open port 8080 (noVNC - access apps/mobile)
+| Component       | Minimum                |
+| :----------     | :--------------------  |
+| **OS**          | Ubuntu 20-24 LTS       |
+| **CPU**         | Cores 2-4 vCPU         |
+| **RAM/VRAM**    | Min 512MB-4GB          |
+| **STORAGE**     | Up to free space       |
+| **NETWORK**     | Open port for access   |
+
+| Component             | Kasm-Chrome            | Xfce-Desktop GUI       |
+| :----------           | :--------------------  | :--------------------  |
+| **Access**            | KasmVNC client         | noVNC client           |
+| **Support**           | Web browser            | Web browser & app/mobile |
+| **Port/Firewall**     | 6901 (default)         | 8080 (custom) app/mobile |
+|                       |                        | 8081 (custom) browser   |
+
+> Note: You can setup up to you for Port/Fiewall in (custom) & for Xfce-desktop, if dont access in app/mobile skipping open port for 8080
 
 ## System Update & Essential Tools
 
 ```bash
 sudo apt update && sudo apt upgrade -y \
-sudo apt -qy install curl git nano jq lz4 build-essential screen ufw
+sudo apt -qy install curl unzip git nano jq lz4 build-essential screen ufw
 ```
 
 ## Install Docker & Compose → <mark>if not yet</mark>
@@ -45,25 +54,18 @@ curl -sSL https://raw.githubusercontent.com/arcxteam/succinct-prover/refs/heads/
 ## Required Firewall Port
 
 ```bash
-sudo ufw allow 22
-sudo ufw allow ssh
 sudo ufw allow 6901/tcp # KasmVNC
-sudo ufw allow 8081/tcp # noVNC
+sudo ufw allow 8081/tcp # noVNC web browser
+sudo ufw allow 8080/tcp # RealVNC viewer app/mobile 
 sudo ufw enable
 sudo ufw status verbose
 ```
 
-## Quick Install
+## 1. Kasm Workspaces - Quick Install
 
-### Method 1: EDIT first YOUR_PASSWORD
+#### Auto Install: EDIT first YOUR_PASSWORD
 ```bash
 curl -s https://raw.githubusercontent.com/arcxteam/Chrome-Linux/refs/heads/main/Setup-Kasmweb-Chrome.sh | bash -s "YOUR_PASSWORD"
-```
-
-### Method 2: EDIT first YOUR_PASSWORD
-```bash
-export KASM_PASSWORD="YOUR_PASSWORD"
-curl -s https://raw.githubusercontent.com/arcxteam/Chrome-Linux/refs/heads/main/Setup-Kasmweb-Chrome.sh | bash
 ```
 
 ## Manual Installation
@@ -82,10 +84,10 @@ services:
     image: kasmweb/chrome:1.17.0
     container_name: kasm-chrome
     environment:
-      - VNC_PW=YOUR_PASSWORD
+      - VNC_PW=YOUR_PASSWORD # Setup up to u
     ports:
       - "6901:6901"
-    shm_size: 2g # can setup
+    shm_size: 1g # Setup up to u
     restart: unless-stopped
     volumes:
       - ./downloads:/home/kasm-user/Downloads
@@ -95,9 +97,7 @@ EOF
 docker compose up -d
 ```
 
-## Access Your Browser
-
-After installation completes, you'll see output like:
+## Access by Browser
 
 ### Steps to Access:
 
@@ -106,18 +106,18 @@ After installation completes, you'll see output like:
 curl ifconfig.me && echo
 ```
 
-1. **Open URL**: Navigate to → <mark>https://YOUR_SERVER_IP:6901</mark>
-2. **Accept SSL Certificate**: Click `Advanced` → `Proceed to site`
-3. **Login**: 
+1. **Open URL** Navigate to → <mark>https://YOUR_SERVER_IP:6901</mark>
+2. **Accept SSL Certificate** Click `Advanced` → `Proceed to site`
+3. **Login**
    - Username: `kasm_user` → <mark>default</mark>
    - Password: `password` → <mark>your custom password</mark>
-4. **Bookmark your tab**
+4. **Bookmark access tab**
 
 ---
 
-## Install Desktop Linux GUI
+## 2. Xfce Desktop GUI - Quick Install
 
-#### Many methode use Linux desktop environments like modern-UI KDE Plasma, Kasm-Workspaces, Cinnamon, GNOME etc.. why I choose Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources.
+## Manual Installation
 
 If you prefer to run manually, edit your password <mark>VNC_PW=YOUR_PASSWORD</mark>
 
@@ -134,18 +134,18 @@ services:
     container_name: xfce-desktop
     restart: unless-stopped
     ports:
-      - "8080:5901"  # VNC access
+      - "8080:5901"  # App/mobile access, remove not use
       - "8081:6901"  # Web access
     environment:
-      - VNC_RESOLUTION=1280x720 # For the best 1920x1080
-      - VNC_PW=YOUR_PASSWORD
+      - VNC_RESOLUTION=1280x720 # for the best 1920x1080
+      - VNC_PW=YOUR_PASSWORD # up to u
       - ENABLE_VNC_AUDIO=true
       - ENABLE_VNC_COPY=true
       - ENABLE_VNC_PASTE=true
     volumes:
       - xfce-data:/home/headless
       - ./downloads:/home/headless/Downloads
-    shm_size: 2gb
+    shm_size: 2gb # up to u
     networks:
       - desktop-network
 
@@ -167,16 +167,16 @@ docker compose up -d
 docker exec -it xfce-desktop bash
 ```
 
-### In container, download full control chrome:
+### In container, download google chrome:
 ```bash
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
 apt update
-apt install -y /tmp/chrome.deb
+apt install -y unzip engrampa file-roller /tmp/chrome.deb
 apt install -y --fix-broken
 rm /tmp/chrome.deb
 ```
 
-### Create google chrome icon and relaunch desktop entry
+### Create google chrome icon and relaunch
 ```bash
 cat > ~/Desktop/google-chrome.desktop << 'EOF'
 [Desktop Entry]
@@ -202,43 +202,44 @@ update-desktop-database
 google-chrome --version &&
 exit
 ```
-
-### Get → IP Address Server
+### Steps to Access:
+#### Get → IP Address Server
 ```bash
 curl ifconfig.me && echo
 ```
 
 ### 1. Access by Web browser
 
-1. **Open URL**: Navigate to → <mark>http://YOUR_SERVER_IP:8081/vnc.html</mark>
+1. **Open URL** Navigate to → <mark>http://YOUR_SERVER_IP:8081/vnc.html</mark>
 2. **You can see menu dashboard noVNC**
-3. **Connect**:
-   - Password: `password` → <mark>your custom password</mark>
-4. **Bookmark your tab**
+3. **Connect**
+   - Credentials: `password` → <mark>your custom password</mark>
+4. **Bookmark access tab**
 
-### 2. Access by VNC on mobile
+### 2. Access by VNC on app/mobile
 
-1. **Download App VNC viewer support like TigerVNC, Anydesk, TeamViewer or RealVNC**
-2. I use RealVNC (recommend) https://www.realvnc.com/en/connect/download/viewer/
-3. **Connect**:
+1. **Download App VNC viewer** Support like TigerVNC, RealVNC
+2. **RealVNC (recommend) iOS/Android** https://www.realvnc.com/en/connect/download/viewer/
+3. **Connect**
    - Address: `ip-address+port` → <mark>YOUR_SERVER_IP:8080</mark>
-   - Name: `Anymore you typing`
-4. **Browing on your mobile**
+   - Name: `Up to you`
+4. **Browsing on app/mobile**
 
 ## Management Commands
 
 ```diff
-## Check Status
+## Check Status & realtime resources
 - docker ps | grep kasm-chrome
+- docker ps | grep xfce-desktop
+- docker stats
 
 ## View Logs
 - docker logs -f kasm-chrome
+- docker logs -f xfce-desktop
 
 ## Stop and Run Browser
 - cd ~/kasm-chrome
+- cd ~/desktop
 - docker compose down
 - docker compose up -d
-
-## View realtime resources
-- docker stats
 ```
