@@ -171,7 +171,7 @@ docker exec -it xfce-desktop bash
 ```bash
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
 apt update
-apt install -y unzip engrampa file-roller /tmp/chrome.deb
+apt install -y unzip autocutsel engrampa /tmp/chrome.deb
 apt install -y --fix-broken
 rm /tmp/chrome.deb
 ```
